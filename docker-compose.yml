@@ -1,0 +1,16 @@
+services:
+  duckduckgo-proxy:
+    build: .
+    ports:
+      - "${PORT:-8080}:8080"
+    environment:
+      HOST: "0.0.0.0"
+      PORT: "8080"
+      API_KEY: "${API_KEY:-}"
+      DEFAULT_MAX_RESULTS: "${DEFAULT_MAX_RESULTS:-5}"
+      SEARCH_TIMEOUT_SEC: "${SEARCH_TIMEOUT_SEC:-8}"
+      SAFESEARCH: "${SAFESEARCH:-moderate}"
+      REGION: "${REGION:-wt-wt}"
+      BACKENDS: "${BACKENDS:-duckduckgo}"
+      VERIFY_SSL: "${VERIFY_SSL:-true}"
+    restart: unless-stopped
