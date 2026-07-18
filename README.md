@@ -68,7 +68,26 @@ curl -s http://127.0.0.1:8080/v1/search \
 ### Docker
 
 ```bash
-docker compose up --build
+cp .env.example .env   # optional; edit API_KEY / VERIFY_SSL as needed
+docker compose up --build -d
+```
+
+Service listens on **http://localhost:8080**.
+
+```bash
+curl -s http://localhost:8080/health
+curl -s http://localhost:8080/v1/search \
+  -H 'Content-Type: application/json' \
+  -d '{"query":"python asyncio","max_results":3}'
+```
+
+Stop with `docker compose down`.
+
+Image-only build:
+
+```bash
+docker build -t duckduckgo-proxy .
+docker run --rm -p 8080:8080 -e VERIFY_SSL=true duckduckgo-proxy
 ```
 
 ## Use with YarKids
