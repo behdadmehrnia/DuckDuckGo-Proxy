@@ -1,6 +1,6 @@
 # DuckDuckGo Search Proxy
 
-Small FastAPI service that wraps DuckDuckGo (via [`ddgs`](https://pypi.org/project/ddgs/)) and exposes a **`POST /v1/search`** endpoint shaped for agentic workflows — specifically the interface YarKids expects when `YARKIDS_WEB_SEARCH_PROVIDER=api`.
+Small FastAPI service that wraps DuckDuckGo (via [`ddgs`](https://pypi.org/project/ddgs/)) and exposes a **`POST /v1/search`** endpoint for agentic workflows.
 
 ## Endpoint
 
@@ -18,11 +18,11 @@ Small FastAPI service that wraps DuckDuckGo (via [`ddgs`](https://pypi.org/proje
 | Field | Type | Notes |
 |-------|------|--------|
 | `query` | string | Required |
-| `max_results` | int | Optional, default `5`, clamped to `1–10` (same as YarKids) |
+| `max_results` | int | Optional, default `5`, clamped to `1–10` |
 
 **Headers** (optional): `Authorization: Bearer <API_KEY>` when `API_KEY` is set.
 
-**Response** (YarKids-compatible)
+**Response**
 
 ```json
 {
@@ -40,8 +40,6 @@ Small FastAPI service that wraps DuckDuckGo (via [`ddgs`](https://pypi.org/proje
   "error": null
 }
 ```
-
-YarKids parses `results` / `organic` / `items` with fields `title|name`, `snippet|content|text|summary|description`, and `url|link|href`. This proxy emits the canonical `title` / `url` / `snippet` shape plus `matched`, `context_text`, and `provider`.
 
 ### `GET /health`
 
@@ -89,20 +87,6 @@ Image-only build:
 docker build -t duckduckgo-proxy .
 docker run --rm -p 8080:8080 -e VERIFY_SSL=true duckduckgo-proxy
 ```
-
-## Use with YarKids
-
-Point YarKids at this proxy:
-
-```env
-YARKIDS_WEB_SEARCH_PROVIDER=api
-YARKIDS_WEB_SEARCH_API_URL=http://host.docker.internal:8080
-YARKIDS_WEB_SEARCH_API_KEY=          # same as API_KEY here, if set
-YARKIDS_WEB_SEARCH_MAX_RESULTS=5
-YARKIDS_WEB_SEARCH_REQUEST_TIMEOUT_SEC=8
-```
-
-YarKids will call `POST {YARKIDS_WEB_SEARCH_API_URL}/v1/search` with `{"query","max_results"}` and inject the returned snippets into the system prompt for creative / storyteller / gamer personas.
 
 ## Configuration
 
